@@ -16,15 +16,7 @@ const _handleRequest = (request, response) => {
 /** The HTTP server. */
 const httpServer = http.createServer(_handleRequest);
 
-/** Starts the server. */
-const startServer = (port, hostname) => {
-  httpServer.listen(port, hostname, () =>
-    console.log(`Server listening on ${hostname}:${port}`)
-  );
-};
-
 module.exports = {
   _handleRequest,
   httpServer,
-  startServer,
 };

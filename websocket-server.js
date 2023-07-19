@@ -48,3 +48,14 @@ webSocketServer.on("request", (request) => {
 
   activeConnections[clientId] = connection;
 });
+
+/** Starts the server. */
+const startServer = (port, hostname) => {
+  httpServer.listen(port, hostname, () =>
+    console.log(`Server listening on ${hostname}:${port}`)
+  );
+};
+
+module.exports = {
+  startServer,
+};
