@@ -1,12 +1,12 @@
 /** Tests for the HTTP server. */
 const { _handleRequest } = require("./http-server");
 
-describe("_handleRequest", () => {
+describe("HTTP server", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test("should write a 404 response.", () => {
+  test("should return a 404 response.", () => {
     const request = {
       method: "GET",
       url: "http://some-url.com",
