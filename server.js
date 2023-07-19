@@ -72,6 +72,4 @@ const startServer = (port, hostname) => {
 module.exports = {
   startServer,
   httpServer,
-  webSocketServer,
-  activeConnections,
 };
