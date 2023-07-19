@@ -1,4 +1,5 @@
 /** Tests for the HTTP server. */
+
 const { _handleRequest } = require("./http-server");
 
 describe("HTTP server", () => {
