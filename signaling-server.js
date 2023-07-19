@@ -6,6 +6,7 @@
 const http = require("http");
 const websocket = require("websocket");
 
+/** Contains all clients connected to the server. */
 const activeConnections = {};
 
 /** A simple HTTP server that logs requests and returns NOT_FOUND. */
@@ -20,9 +21,10 @@ const httpServer = http.createServer((request, response) => {
   response.end("There be nothing to see here.");
 });
 
+/** The WebSocket Server. */
 const webSocketServer = new websocket.server({ httpServer });
 
-/** When a client sends a WebSocket request, accept it and start listening. */
+// When a client sends a WebSocket request, accept it and start listening.
 webSocketServer.on("request", (request) => {
   const clientId = request.resourceURL.path.split("/")[1];
   const connection = request.accept(null, request.origin);
@@ -60,6 +62,7 @@ webSocketServer.on("request", (request) => {
   activeConnections[clientId] = connection;
 });
 
+/** Starts the server. */
 const startServer = (port, hostname) => {
   httpServer.listen(port, hostname, () =>
     console.log(`Server listening on ${hostname}:${port}`)
