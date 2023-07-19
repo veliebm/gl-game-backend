@@ -1,7 +1,5 @@
-/*
- * Backend for our GL game.
- * Sets up a signaling server to connect players to each other via WebRTC.
- */
+/** A websocket signaling server.*/
+
 const websocket = require("websocket");
 const { httpServer } = require("./http-server");
 
