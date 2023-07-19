@@ -1,0 +1,14 @@
+{
+  "name": "gl-game-backend",
+  "version": "0.1.0",
+  "description": "The backend for our GL game.",
+  "main": "signaling-server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Benjamin Velie",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "websocket": "^1.0.34"
+  }
+}
