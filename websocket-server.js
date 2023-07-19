@@ -9,6 +9,12 @@ const activeConnections = {};
 /** The WebSocket Server. */
 const webSocketServer = new websocket.server({ httpServer });
 
+/** When a client disconnects, delete them from active connections. */
+const _onClose = (clientId) => {
+  delete activeConnections[clientId];
+  console.error(`Client ${clientId} disconnected`);
+};
+
 /** Upon new WebSocket request, accept and start being a signaling server. */
 const _onRequest = (request) => {
   const clientId = request.resourceURL.path.split("/")[1];
@@ -39,10 +45,7 @@ const _onRequest = (request) => {
   });
 
   // When a client disconnects, remove them from the server's active connections.
-  connection.on("close", () => {
-    delete activeConnections[clientId];
-    console.error(`Client ${clientId} disconnected`);
-  });
+  connection.on("close", () => _onClose(clientId));
 
   activeConnections[clientId] = connection;
 };
