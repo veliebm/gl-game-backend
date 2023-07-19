@@ -24,7 +24,7 @@ const startServer = (port, hostname) => {
 };
 
 module.exports = {
-  handleRequest: _handleRequest,
+  _handleRequest,
   httpServer,
   startServer,
 };
