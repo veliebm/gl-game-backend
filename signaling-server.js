@@ -1,6 +1,6 @@
 /*
  * Backend for our GL game.
- * Sets up a simple signaling server to connect players to each other.
+ * Sets up a signaling server to connect players to each other via WebRTC.
  */
 
 const http = require('http');
@@ -8,7 +8,7 @@ const websocket = require('websocket');
 
 const activeConnections = {};
 
-// Runs a simple HTTP server that logs requests and returns NOT_FOUND.
+/** A simple HTTP server that logs requests and returns NOT_FOUND. */
 const httpServer = http.createServer((request, response) => {
   console.log(`Incoming HTTP request: ${request.method.toUpperCase()} ${request.url}`);
   response.writeHead(404, {
@@ -19,10 +19,11 @@ const httpServer = http.createServer((request, response) => {
 });
 
 const webSocketServer = new websocket.server({ httpServer });
+
+/** When a client sends a WebSocket request, accept it and start listening. */
 webSocketServer.on('request', (request) => {
   const clientId = request.resourceURL.path.split('/')[1]
   const connection = request.accept(null, request.origin);
-
   console.log(`New client has connected: ${clientId}`);
 
   // When a client sends a message, forward it to its recipient.
