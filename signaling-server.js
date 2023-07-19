@@ -60,9 +60,15 @@ webSocketServer.on("request", (request) => {
   activeConnections[clientId] = connection;
 });
 
-const port = process.env.PORT || 8000;
-const hostname = process.env.HOSTNAME || "127.0.0.1";
+const startServer = (port, hostname) => {
+  httpServer.listen(port, hostname, () =>
+    console.log(`Server listening on ${hostname}:${port}`)
+  );
+};
 
-httpServer.listen(port, hostname, () =>
-  console.log(`Server listening on ${hostname}:${port}`)
-);
+module.exports = {
+  startServer,
+  httpServer,
+  webSocketServer,
+  activeConnections,
+};
