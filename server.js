@@ -2,24 +2,11 @@
  * Backend for our GL game.
  * Sets up a signaling server to connect players to each other via WebRTC.
  */
-
-const http = require("http");
 const websocket = require("websocket");
+const { httpServer } = require("./http-server");
 
 /** Contains all clients connected to the server. */
 const activeConnections = {};
-
-/** A simple HTTP server that logs requests and returns NOT_FOUND. */
-const httpServer = http.createServer((request, response) => {
-  console.log(
-    `Incoming HTTP request: ${request.method.toUpperCase()} ${request.url}`
-  );
-  response.writeHead(404, {
-    "Content-Type": "text/plain",
-    "Access-Control-Allow-Origin": "*",
-  });
-  response.end("There be nothing to see here.");
-});
 
 /** The WebSocket Server. */
 const webSocketServer = new websocket.server({ httpServer });
@@ -61,15 +48,3 @@ webSocketServer.on("request", (request) => {
 
   activeConnections[clientId] = connection;
 });
-
-/** Starts the server. */
-const startServer = (port, hostname) => {
-  httpServer.listen(port, hostname, () =>
-    console.log(`Server listening on ${hostname}:${port}`)
-  );
-};
-
-module.exports = {
-  startServer,
-  httpServer,
-};

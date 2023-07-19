@@ -1,15 +1,10 @@
-/** Tests for the server */
-const websocket = require("websocket");
+/** Tests for the HTTP server. */
 const http = require("http");
-const { startServer, httpServer } = require("./server");
+const { startServer, _handleRequest, httpServer } = require("./http-server");
 
 jest.mock("http", () => ({
   createServer: jest.fn().mockReturnThis(),
   listen: jest.fn(),
-}));
-
-jest.mock("websocket", () => ({
-  server: jest.fn().mockImplementation(() => ({ on: jest.fn() })),
 }));
 
 describe("startServer", () => {
