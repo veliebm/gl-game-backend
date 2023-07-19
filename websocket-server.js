@@ -38,7 +38,7 @@ const _onClose = (clientId) => {
   console.error(`Client ${clientId} disconnected`);
 };
 
-/** Upon new WebSocket request, accept and start being a signaling server. */
+/** When there's a new WebSocket request, accept it and start communicating. */
 const _onRequest = (request) => {
   const clientId = request.resourceURL.path.split("/")[1];
   const connection = request.accept(null, request.origin);
