@@ -1,4 +1,4 @@
-/** A websocket signaling server.*/
+/** A WebSocket-based signaling server. */
 
 const websocket = require("websocket");
 const { httpServer } = require("./http-server");
@@ -9,8 +9,8 @@ const activeConnections = {};
 /** The WebSocket Server. */
 const webSocketServer = new websocket.server({ httpServer });
 
-// When a client sends a WebSocket request, accept it and start listening.
-webSocketServer.on("request", (request) => {
+/** Upon new WebSocket request, accept and start being a signaling server. */
+const _onRequest = (request) => {
   const clientId = request.resourceURL.path.split("/")[1];
   const connection = request.accept(null, request.origin);
   console.log(`New client has connected: ${clientId}`);
@@ -45,7 +45,9 @@ webSocketServer.on("request", (request) => {
   });
 
   activeConnections[clientId] = connection;
-});
+};
+
+webSocketServer.on("request", _onRequest);
 
 /** Starts the server. */
 const startServer = (port, hostname) => {
