@@ -6,10 +6,7 @@ const { httpServer } = require("./http-server");
 const { ClientExceptionMessage } = require("./ClientExceptionMessage");
 const { RequestOfferMessage } = require("./RequestOfferMessage");
 
-/** Contains all clients connected to the server. */
 const activeConnections = {};
-
-/** The WebSocket Server. */
 const webSocketServer = new websocket.server({ httpServer });
 
 /** When a message comes in, forward it along. */
