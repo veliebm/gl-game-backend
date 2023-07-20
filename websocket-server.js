@@ -38,7 +38,7 @@ const _onMessage = (data, clientId) => {
 
   const recipientId = message.id;
 
-  if (!activeConnections.hasOwnProperty("recipient")) {
+  if (!activeConnections.hasOwnProperty(recipientId)) {
     activeConnections[clientId].send(
       new ClientExceptionMessage(
         400,
