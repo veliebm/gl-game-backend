@@ -26,7 +26,14 @@ function handle(request: Request): Response {
     console.log(`Active clients: ${JSON.stringify(activeSockets)}`);
   };
 
-  socket.onmessage = ({ data }) => {};
+  socket.onmessage = ({ data }) => {
+    const message = JSON.parse(data.utf8Data);
+    const recipientId = message.id;
+    message.id = clientId;
+    const recipient = activeSockets[recipientId];
+    const outgoingData = JSON.stringify(message);
+    recipient.send(outgoingData);
+  };
 
   return response;
 }
