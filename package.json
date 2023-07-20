@@ -4,13 +4,11 @@
   "description": "The backend for our GL game.",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
-    "test": "jest"
+    "start": "node ."
   },
   "author": "Benjamin Velie",
   "license": "Apache-2.0",
   "dependencies": {
-    "jest": "^29.6.1",
     "websocket": "^1.0.34"
   }
 }
