@@ -51,15 +51,10 @@ const _onMessage = (data, clientId) => {
   }
 
   const recipient = activeConnections[recipientId];
-
-  if (recipient) {
-    message.id = clientId;
-    const outgoingData = JSON.stringify(message);
-    console.log(`Sending to Client ${recipientId}: ${outgoingData}`);
-    recipient.send(outgoingData);
-  } else {
-    console.error(`Recipient Client ${recipientId} not found`);
-  }
+  message.id = clientId;
+  const outgoingData = JSON.stringify(message);
+  console.log(`Sending to Client ${recipientId}: ${outgoingData}`);
+  recipient.send(outgoingData);
 };
 
 /** When a client disconnects, delete them from active connections. */
