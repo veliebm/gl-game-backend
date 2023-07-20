@@ -1,5 +1,5 @@
 /** Exception to send to clients. */
-class ExternalException {
+class ClientExceptionMessage {
   type = "Exception";
   code;
   message;
@@ -17,5 +17,5 @@ class ExternalException {
 }
 
 module.exports = {
-  ExceptionMessage: ExternalException,
+  ClientExceptionMessage: ClientExceptionMessage,
 };

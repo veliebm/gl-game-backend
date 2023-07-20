@@ -14,5 +14,5 @@ class RequestOfferMessage {
 }
 
 module.exports = {
-  RequestOffer: RequestOfferMessage,
+  RequestOfferMessage: RequestOfferMessage,
 };
