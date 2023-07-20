@@ -38,6 +38,18 @@ const _onMessage = (data, clientId) => {
   }
 
   const recipientId = message.id;
+
+  if (!activeConnections.hasOwnProperty("recipient")) {
+    activeConnections[clientId].send(
+      ExceptionMessage(
+        400,
+        `BAD REQUEST: ID doesn't exist. ID: ${recipientId}`,
+        `Client ${clientId} tried sending a nonexistent ID: ${recipientId}`
+      ).toJson()
+    );
+    return;
+  }
+
   const recipient = activeConnections[recipientId];
 
   if (recipient) {
