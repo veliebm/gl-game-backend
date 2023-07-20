@@ -2,8 +2,7 @@
 
 const http = require("http");
 
-/** Logs a request and returns NOT_FOUND. */
-const _handleRequest = (request, response) => {
+const httpServer = http.createServer((request, response) => {
   console.log(
     `Incoming HTTP request: ${request.method.toUpperCase()} ${request.url}`
   );
@@ -12,12 +11,8 @@ const _handleRequest = (request, response) => {
     "Access-Control-Allow-Origin": "*",
   });
   response.end("There be nothing to see here.");
-};
-
-/** The HTTP server. */
-const httpServer = http.createServer(_handleRequest);
+});
 
 module.exports = {
-  _handleRequest,
   httpServer,
 };
