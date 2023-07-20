@@ -15,6 +15,7 @@ const _onMessage = (data, clientId) => {
     console.error(
       `Client ${clientId} tried sending data with invalid type: ${data.type}`
     );
+    return;
   }
 
   console.log(`Incoming message from Client ${clientId}: ${data.utf8Data}`);
