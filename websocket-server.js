@@ -2,6 +2,7 @@
 
 const websocket = require("websocket");
 const { httpServer } = require("./http-server");
+const { ExceptionMessage } = require("./ExternalException");
 
 /** Contains all clients connected to the server. */
 const activeConnections = {};
@@ -12,8 +13,12 @@ const webSocketServer = new websocket.server({ httpServer });
 /** When a message comes in, forward it along. */
 const _onMessage = (data, clientId) => {
   if (data.type !== "utf8") {
-    console.error(
-      `Client ${clientId} tried sending data with invalid type: ${data.type}`
+    activeConnections[clientId].send(
+      ExceptionMessage(
+        400,
+        `BAD REQUEST: You sent data with bad encoding. Its encoding: ${data.type}`,
+        `Client ${clientId} tried sending message with invalid encoding: ${data.type}`
+      ).toJson()
     );
     return;
   }
