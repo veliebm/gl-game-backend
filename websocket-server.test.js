@@ -19,7 +19,7 @@ jest.mock("websocket", () => ({
   })),
 }));
 
-describe("_onMessage", () => {
+describe("On message", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -28,26 +28,13 @@ describe("_onMessage", () => {
     const consoleError = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    const consoleLog = jest.spyOn(console, "log").mockImplementation(() => {});
-    const clientId = "client1";
+    const clientId = "some-client";
     const data = {
-      type: "utf8",
-      utf8Data: JSON.stringify({
-        id: "client2",
-        content: "Hello World",
-      }),
-    };
-    global.activeConnections = {
-      client2: {
-        send: jest.fn(),
-      },
+      type: "some-invalid-type",
     };
 
     _onMessage(data, clientId);
 
-    expect(consoleLog).toHaveBeenCalled();
-
-    consoleError.mockRestore();
-    consoleLog.mockRestore();
+    expect(consoleError).toHaveBeenCalled();
   });
 });
