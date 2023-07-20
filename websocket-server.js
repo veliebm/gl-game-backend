@@ -14,7 +14,7 @@ const webSocketServer = new websocket.server({ httpServer });
 const _onMessage = (data, clientId) => {
   if (data.type !== "utf8") {
     activeConnections[clientId].send(
-      ExceptionMessage(
+      new ExceptionMessage(
         400,
         `BAD REQUEST: You sent data with bad encoding. Its encoding: ${data.type}`,
         `Client ${clientId} tried sending message with invalid encoding: ${data.type}`
@@ -28,7 +28,7 @@ const _onMessage = (data, clientId) => {
 
   if (!message.hasOwnProperty("id")) {
     activeConnections[clientId].send(
-      ExceptionMessage(
+      new ExceptionMessage(
         400,
         `BAD REQUEST: You sent a message with no ID. Message: ${message}`,
         `Client ${clientId} tried sending message with no ID: ${message}`
@@ -41,7 +41,7 @@ const _onMessage = (data, clientId) => {
 
   if (!activeConnections.hasOwnProperty("recipient")) {
     activeConnections[clientId].send(
-      ExceptionMessage(
+      new ExceptionMessage(
         400,
         `BAD REQUEST: ID doesn't exist. ID: ${recipientId}`,
         `Client ${clientId} tried sending a nonexistent ID: ${recipientId}`
