@@ -1,6 +1,6 @@
 /** Message to request an offer from a client. */
 
-class RequestOffer {
+class RequestOfferMessage {
   type = "requestOffer";
   id;
 
@@ -14,5 +14,5 @@ class RequestOffer {
 }
 
 module.exports = {
-  RequestOffer: RequestOffer,
+  RequestOffer: RequestOfferMessage,
 };

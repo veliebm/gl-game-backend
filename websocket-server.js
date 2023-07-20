@@ -4,7 +4,7 @@ const websocket = require("websocket");
 const crypto = require("crypto");
 const { httpServer } = require("./http-server");
 const { ExceptionMessage } = require("./ExternalException");
-const { RequestOffer } = require("./RequestOffer");
+const { RequestOffer: RequestOfferMessage } = require("./RequestOfferMessage");
 
 /** Contains all clients connected to the server. */
 const activeConnections = {};
@@ -77,7 +77,7 @@ const _onRequest = (request) => {
 
   for (otherId in activeConnections) {
     console.log(`Requesting offer from ${otherId} for ${cliendId}`);
-    connection.send(new RequestOffer(otherId).toJson());
+    connection.send(new RequestOfferMessage(otherId).toJson());
   }
 
   activeConnections[clientId] = connection;
