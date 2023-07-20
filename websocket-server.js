@@ -61,4 +61,7 @@ const startServer = (port, hostname) => {
 
 module.exports = {
   startServer,
+  _onMessage,
+  _onClose,
+  _onRequest,
 };
