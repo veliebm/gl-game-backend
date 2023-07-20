@@ -25,6 +25,18 @@ const _onMessage = (data, clientId) => {
 
   console.log(`Incoming message from Client ${clientId}: ${data.utf8Data}`);
   const message = JSON.parse(data.utf8Data);
+
+  if (!message.hasOwnProperty("id")) {
+    activeConnections[clientId].send(
+      ExceptionMessage(
+        400,
+        `BAD REQUEST: You sent a message with no ID. Message: ${message}`,
+        `Client ${clientId} tried sending message with no ID: ${message}`
+      ).toJson()
+    );
+    return;
+  }
+
   const recipientId = message.id;
   const recipient = activeConnections[recipientId];
 
