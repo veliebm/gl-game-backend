@@ -1,8 +1,10 @@
 /** A WebSocket-based signaling server. */
 
 const websocket = require("websocket");
+const crypto = require("crypto");
 const { httpServer } = require("./http-server");
 const { ExceptionMessage } = require("./ExternalException");
+const { RequestOffer } = require("./RequestOffer");
 
 /** Contains all clients connected to the server. */
 const activeConnections = {};
@@ -65,17 +67,33 @@ const _onClose = (clientId) => {
 
 /** When there's a new WebSocket request, accept it and start communicating. */
 const _onRequest = (request) => {
-  const clientId = request.resourceURL.path.split("/")[1];
+  const clientId = _makeNewId();
   const connection = request.accept(null, request.origin);
+
   console.log(`New client has connected: ${clientId}`);
 
   connection.on("message", (data) => _onMessage(data, clientId));
   connection.on("close", () => _onClose(clientId));
 
+  for (otherId in activeConnections) {
+    console.log(`Requesting offer from ${otherId} for ${cliendId}`);
+    connection.send(new RequestOffer(otherId).toJson());
+  }
+
   activeConnections[clientId] = connection;
 };
 
 webSocketServer.on("request", _onRequest);
+
+/** Returns a new ID that's not already in use. */
+const _makeNewId = () => {
+  while (true) {
+    const clientId = crypto.randomBytes(4).toString("hex");
+    if (!activeConnections.hasOwnProperty(clientId)) {
+      return clientId;
+    }
+  }
+};
 
 /** Starts the server. */
 const startServer = (port, hostname) => {

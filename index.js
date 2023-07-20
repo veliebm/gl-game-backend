@@ -5,5 +5,5 @@
 const { startServer } = require("./websocket-server");
 
 const port = process.env.PORT || 8000;
-const hostname = process.env.HOSTNAME || "127.0.0.1";
+const hostname = process.env.HOSTNAME || "localhost";
 startServer(port, hostname);
