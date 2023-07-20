@@ -73,7 +73,7 @@ const _onRequest = (request) => {
   connection.on("close", () => _onClose(clientId));
 
   for (otherId in activeConnections) {
-    console.log(`Requesting offer from ${otherId} for ${cliendId}`);
+    console.log(`Requesting offer from ${otherId} for ${clientId}`);
     connection.send(new RequestOfferMessage(otherId).toJson());
   }
 
