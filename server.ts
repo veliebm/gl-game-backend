@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
 import { ExceptionResponse } from "./ExceptionResponse.ts";
+import { RoomCodeResponse } from "./RoomCodeResponse.ts";
 
 const activeSockets: Record<string, WebSocket> = {};
 
@@ -35,9 +36,17 @@ function handle(request: Request): Response {
   socket.onmessage = ({ data }) => {
     console.log(`Incoming message from ${clientId}`);
     const message = JSON.parse(data);
-    const recipient = activeSockets[message.id];
-    message.id = clientId;
-    recipient.send(JSON.stringify(message));
+
+    if (
+      message.type === "candidate" || message.type === "offer" ||
+      message.type === "request"
+    ) {
+      const recipient = activeSockets[message.id];
+      message.id = clientId;
+      recipient.send(JSON.stringify(message));
+    } else if (message.type === "host") {
+      socket.send(new RoomCodeResponse("thisIsYourRoomCode").toJson());
+    }
   };
 
   return response;
