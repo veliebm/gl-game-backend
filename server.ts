@@ -32,24 +32,10 @@ function handle(request: Request): Response {
   };
 
   socket.onmessage = ({ data }) => {
-    if (!data.includes("type")) {
-      socket.send(
-        new ExceptionMessage(
-          400,
-          `BAD REQUEST: You sent an object without a type property. You sent: ${data}`,
-        ).withInternalMessage(
-          `Client ${clientId} sent an object without a type`,
-        )
-          .toJson(),
-      );
-      return;
-    }
-    const message = JSON.parse(data.utf8Data);
-    const recipientId = message.id;
+    const message = JSON.parse(data);
+    const recipient = activeSockets[message.id];
     message.id = clientId;
-    const recipient = activeSockets[recipientId];
-    const outgoingData = JSON.stringify(message);
-    recipient.send(outgoingData);
+    recipient.send(JSON.stringify(message));
   };
 
   return response;
