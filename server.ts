@@ -18,8 +18,11 @@ function handle(request: Request): Response {
   socket.onopen = () => {
     clientId = makeNewId();
     console.log(`Client ${clientId} has connected.`);
-    for (const activeSocket of Object.values(activeSockets)) {
-      activeSocket.send(new RequestOfferResponse(clientId).toJson());
+    for (const activeSocketId of Object.keys(activeSockets)) {
+      console.log(`Asking ${activeSocketId} to send an offer to ${clientId}.`);
+      activeSockets[activeSocketId].send(
+        new RequestOfferResponse(clientId).toJson(),
+      );
     }
     activeSockets[clientId] = socket;
   };
