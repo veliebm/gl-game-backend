@@ -1,7 +1,7 @@
 /** Error message that can be sent to the client. */
 export class ExceptionMessage {
   /** The Type of this object. */
-  type = "Exception";
+  type = "exception";
   /** The HTTP status code to return. */
   code: number;
   /** The message to accompany the error. */
