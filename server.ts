@@ -16,8 +16,8 @@ function handle(request: Request): Response {
   let clientId: string;
 
   socket.onopen = () => {
-    console.log(`Client has connected.`);
     clientId = makeNewId();
+    console.log(`Client ${clientId} has connected.`);
     for (const activeSocket of Object.values(activeSockets)) {
       activeSocket.send(new RequestOfferResponse(clientId).toJson());
     }
@@ -26,7 +26,7 @@ function handle(request: Request): Response {
   };
 
   socket.onclose = () => {
-    console.log(`Client has disconnected.`);
+    console.log(`Client ${clientId} has disconnected.`);
     delete activeSockets[clientId];
     console.log(`Active clients: ${JSON.stringify(activeSockets)}`);
   };
