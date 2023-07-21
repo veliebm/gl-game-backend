@@ -22,13 +22,11 @@ function handle(request: Request): Response {
       activeSocket.send(new RequestOfferResponse(clientId).toJson());
     }
     activeSockets[clientId] = socket;
-    console.log(`Active clients: ${JSON.stringify(activeSockets)}`);
   };
 
   socket.onclose = () => {
     console.log(`Client ${clientId} has disconnected.`);
     delete activeSockets[clientId];
-    console.log(`Active clients: ${JSON.stringify(activeSockets)}`);
   };
 
   socket.onmessage = ({ data }) => {
