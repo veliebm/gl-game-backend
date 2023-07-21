@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
-import { RequestOfferMessage } from "./RequestOfferMessage.ts";
-import { ExceptionMessage } from "./ExceptionMessage.ts";
+import { RequestOfferResponse } from "./RequestOfferResponse.ts";
+import { ExceptionResponse } from "./ExceptionResponse.ts";
 
 const activeSockets: Record<string, WebSocket> = {};
 
@@ -19,7 +19,7 @@ function handle(request: Request): Response {
     console.log(`Client has connected.`);
     clientId = makeNewId();
     for (const activeSocket of Object.values(activeSockets)) {
-      activeSocket.send(new RequestOfferMessage(clientId).toJson());
+      activeSocket.send(new RequestOfferResponse(clientId).toJson());
     }
     activeSockets[clientId] = socket;
     console.log(`Active clients: ${JSON.stringify(activeSockets)}`);

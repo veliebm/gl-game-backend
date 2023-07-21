@@ -1,5 +1,5 @@
-/** Error message that can be sent to the client. */
-export class ExceptionMessage {
+/** Error response that can be sent to the client. */
+export class ExceptionResponse {
   /** The Type of this object. */
   type = "exception";
   /** The HTTP status code to return. */

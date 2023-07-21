@@ -1,5 +1,5 @@
 /** Message to request an offer from a client. */
-export class RequestOfferMessage {
+export class RequestOfferResponse {
   /** The Type of this object. */
   type = "requestOffer";
   /** The Client ID to send an offer to. */
