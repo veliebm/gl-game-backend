@@ -30,6 +30,7 @@ function handle(request: Request): Response {
   };
 
   socket.onmessage = ({ data }) => {
+    console.log(`Incoming message from ${clientId}`);
     const message = JSON.parse(data);
     const recipient = activeSockets[message.id];
     message.id = clientId;
