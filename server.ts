@@ -43,7 +43,8 @@ function handle(request: Request): Response {
 /** Returns a new ID that's not already in use. */
 function makeNewId(): string {
   const length = 4;
-  const allowedCharacters = "abcdefjhigklmnopqrstuvwxyz";
+  const allowedCharacters =
+    "abcdefjhigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   while (true) {
     let id = "";
     for (let i = 0; i < length; i++) {
