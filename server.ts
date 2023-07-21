@@ -19,12 +19,6 @@ function handle(request: Request): Response {
   socket.onopen = () => {
     clientId = makeNewId();
     console.log(`Client ${clientId} has connected.`);
-    for (const activeSocketId of Object.keys(activeSockets)) {
-      console.log(`Asking ${activeSocketId} to send an offer to ${clientId}.`);
-      activeSockets[activeSocketId].send(
-        new RequestOfferResponse(clientId).toJson(),
-      );
-    }
     activeSockets[clientId] = socket;
   };
 
@@ -34,18 +28,27 @@ function handle(request: Request): Response {
   };
 
   socket.onmessage = ({ data }) => {
-    console.log(`Incoming message from ${clientId}`);
     const message = JSON.parse(data);
+    console.log(`Incoming message from ${clientId} with type: ${message.type}`);
 
     if (
       message.type === "candidate" || message.type === "offer" ||
-      message.type === "request"
+      message.type === "answer"
     ) {
       const recipient = activeSockets[message.id];
       message.id = clientId;
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
       socket.send(new RoomCodeResponse("thisIsYourRoomCode").toJson());
+    } else if (message.type === "join") {
+      for (const activeSocketId of Object.keys(activeSockets)) {
+        console.log(
+          `Asking ${activeSocketId} to send an offer to ${clientId}.`,
+        );
+        activeSockets[activeSocketId].send(
+          new RequestOfferResponse(clientId).toJson(),
+        );
+      }
     }
   };
 
