@@ -18,13 +18,13 @@ function handle(request: Request): Response {
   let clientId: string;
 
   socket.onopen = () => {
-    clientId = makeNewId();
-    console.log(`Client ${clientId} has connected.`);
+    clientId = `client-${makeRandomString(4)}`;
+    console.log(`${clientId} has connected.`);
     activeSockets[clientId] = socket;
   };
 
   socket.onclose = () => {
-    console.log(`Client ${clientId} has disconnected.`);
+    console.log(`${clientId} has disconnected.`);
     delete activeSockets[clientId];
     delete rooms[clientId];
   };
@@ -41,7 +41,7 @@ function handle(request: Request): Response {
       message.id = clientId;
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
-      const roomCode = "room-ViFa";
+      const roomCode = `room-${makeRandomString(4)}`;
       rooms[clientId] = roomCode;
       console.log(`${clientId} has made a new room: ${roomCode}`);
       socket.send(new RoomCodeResponse(roomCode).toJson());
@@ -57,15 +57,15 @@ function handle(request: Request): Response {
           );
         }
       }
+      rooms[clientId] = message.roomCode;
     }
   };
 
   return response;
 }
 
-/** Returns a new ID that's not already in use. */
-function makeNewId(): string {
-  const length = 4;
+/** Returns a random string. */
+function makeRandomString(length: number): string {
   const allowedCharacters =
     "abcdefjhigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   while (true) {
