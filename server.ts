@@ -4,6 +4,7 @@ import { ExceptionResponse } from "./ExceptionResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
 
 const activeSockets: Record<string, WebSocket> = {};
+const rooms: Record<string, string> = {};
 
 function handle(request: Request): Response {
   if (request.headers.get("upgrade") !== "websocket") {
@@ -25,6 +26,7 @@ function handle(request: Request): Response {
   socket.onclose = () => {
     console.log(`Client ${clientId} has disconnected.`);
     delete activeSockets[clientId];
+    delete rooms[clientId];
   };
 
   socket.onmessage = ({ data }) => {
@@ -39,15 +41,21 @@ function handle(request: Request): Response {
       message.id = clientId;
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
-      socket.send(new RoomCodeResponse("thisIsYourRoomCode").toJson());
+      const roomCode = "room-ViFa";
+      rooms[clientId] = roomCode;
+      console.log(`${clientId} has made a new room: ${roomCode}`);
+      socket.send(new RoomCodeResponse(roomCode).toJson());
     } else if (message.type === "join") {
+      console.log(`${clientId} has asked to join room: ${message.roomCode}`);
       for (const activeSocketId of Object.keys(activeSockets)) {
-        console.log(
-          `Asking ${activeSocketId} to send an offer to ${clientId}.`,
-        );
-        activeSockets[activeSocketId].send(
-          new RequestOfferResponse(clientId).toJson(),
-        );
+        if (rooms[activeSocketId] === message.roomCode) {
+          console.log(
+            `Asking ${activeSocketId} to send an offer to ${clientId}.`,
+          );
+          activeSockets[activeSocketId].send(
+            new RequestOfferResponse(clientId).toJson(),
+          );
+        }
       }
     }
   };
