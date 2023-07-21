@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
 import { RequestOfferMessage } from "./RequestOfferMessage.ts";
+import { ExceptionMessage } from "./ExceptionMessage.ts";
 
 const activeSockets: Record<string, WebSocket> = {};
 
@@ -31,6 +32,18 @@ function handle(request: Request): Response {
   };
 
   socket.onmessage = ({ data }) => {
+    if (!data.includes("type")) {
+      socket.send(
+        new ExceptionMessage(
+          400,
+          `BAD REQUEST: You sent an object without a type property. You sent: ${data}`,
+        ).withInternalMessage(
+          `Client ${clientId} sent an object without a type`,
+        )
+          .toJson(),
+      );
+      return;
+    }
     const message = JSON.parse(data.utf8Data);
     const recipientId = message.id;
     message.id = clientId;
