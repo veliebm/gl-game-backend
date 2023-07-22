@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
 import * as log from "https://deno.land/std@0.195.0/log/mod.ts";
+import { generate } from "npm:random-words@2.0";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
-import { generate } from "npm:random-words@2.0";
 
 const activeSockets: Record<string, WebSocket> = {};
 const rooms: Record<string, string> = {};
