@@ -64,7 +64,7 @@ function handle(request: Request): Response {
       const roomCode = `room-${makeId()}`;
       rooms[clientId] = roomCode;
       log.info(`${clientId} has made a new room: ${roomCode}`);
-      socket.send(new RoomCodeResponse(roomCode).toJson());
+      socket.send(JSON.stringify(new RoomCodeResponse(roomCode)));
     } else if (message.type === "join") {
       log.info(`${clientId} wants to join room: ${message.roomCode}`);
       for (const activeSocketId of Object.keys(activeSockets)) {
@@ -73,7 +73,7 @@ function handle(request: Request): Response {
             `Asking ${activeSocketId} to send an offer to ${clientId}.`,
           );
           activeSockets[activeSocketId].send(
-            new RequestOfferResponse(clientId).toJson(),
+            JSON.stringify(new RequestOfferResponse(clientId)),
           );
         }
       }

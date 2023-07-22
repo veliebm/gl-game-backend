@@ -8,9 +8,4 @@ export class RequestOfferResponse {
   constructor(id: string) {
     this.id = id;
   }
-
-  /** Serializes this object to JSON. */
-  toJson() {
-    return JSON.stringify(this);
-  }
 }

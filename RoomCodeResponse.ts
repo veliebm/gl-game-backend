@@ -8,9 +8,4 @@ export class RoomCodeResponse {
   constructor(roomCode: string) {
     this.roomCode = roomCode;
   }
-
-  /** Serializes this object to JSON. */
-  toJson() {
-    return JSON.stringify(this);
-  }
 }
