@@ -127,6 +127,20 @@ function handle(request: Request): Response {
       log.info(`${clientId} has made a new room: ${roomCode}`);
       socket.send(JSON.stringify(new RoomCodeResponse(roomCode)));
     } else if (message.type === "join") {
+      if (message.roomCode === undefined) {
+        log.error(
+          `${clientId} tried to join a room without providing a room code`,
+        );
+        socket.send(
+          JSON.stringify(
+            new ExceptionResponse(
+              400,
+              `You tried to join a room without providing a room code. Your message: ${message}`,
+            ),
+          ),
+        );
+        return;
+      }
       log.info(`${clientId} wants to join room: ${message.roomCode}`);
       for (const activeSocketId of Object.keys(activeSockets)) {
         if (rooms[activeSocketId] === message.roomCode) {
