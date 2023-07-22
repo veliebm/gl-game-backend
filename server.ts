@@ -71,8 +71,38 @@ function handle(request: Request): Response {
       message.type === "candidate" || message.type === "offer" ||
       message.type === "answer"
     ) {
-      log.debug(`Forwarding message to ${message.id}`);
+      if (!message.id) {
+        log.error(
+          `${clientId} didn't include an ID when they should have`,
+        );
+        log.debug(`The message: ${message}`);
+        socket.send(
+          JSON.stringify(
+            new ExceptionResponse(
+              400,
+              `You should have included an ID in your message, but you didn't. Your message: ${message}`,
+            ),
+          ),
+        );
+        return;
+      }
       const recipient = activeSockets[message.id];
+      if (!recipient) {
+        log.error(
+          `${clientId} tried to send a message to a recipient that doesn't exist`,
+        );
+        log.debug(`The message: ${message}`);
+        socket.send(
+          JSON.stringify(
+            new ExceptionResponse(
+              400,
+              `You tried to send a message to an ID that doesn't exist. The ID: ${message}`,
+            ),
+          ),
+        );
+        return;
+      }
+      log.debug(`Forwarding message to ${message.id}`);
       message.id = clientId;
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
