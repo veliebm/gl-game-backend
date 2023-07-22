@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
-import { ExceptionResponse } from "./ExceptionResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
+import { generate } from "npm:random-words@2.0";
 
 const activeSockets: Record<string, WebSocket> = {};
 const rooms: Record<string, string> = {};
@@ -18,7 +18,7 @@ function handle(request: Request): Response {
   let clientId: string;
 
   socket.onopen = () => {
-    clientId = `client-${makeRandomString(4)}`;
+    clientId = `client-${makeId()}`;
     console.log(`${clientId} has connected.`);
     activeSockets[clientId] = socket;
   };
@@ -41,7 +41,7 @@ function handle(request: Request): Response {
       message.id = clientId;
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
-      const roomCode = `room-${makeRandomString(4)}`;
+      const roomCode = `room-${makeId()}`;
       rooms[clientId] = roomCode;
       console.log(`${clientId} has made a new room: ${roomCode}`);
       socket.send(new RoomCodeResponse(roomCode).toJson());
@@ -64,18 +64,15 @@ function handle(request: Request): Response {
   return response;
 }
 
-/** Returns a random string. */
-function makeRandomString(length: number): string {
-  const allowedCharacters =
-    "abcdefjhigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const usedIds = new Set();
+/** Generates a new random ID. Doesn't reuse already used IDs. */
+function makeId(): string {
   while (true) {
-    let id = "";
-    for (let i = 0; i < length; i++) {
-      id +=
-        allowedCharacters[Math.floor(Math.random() * allowedCharacters.length)];
-    }
-    if (!(id in activeSockets)) {
-      return id;
+    const candidate = generate({ minLength: 3, maxLength: 3, exactly: 2 }).join(
+      "",
+    );
+    if (!(candidate in usedIds)) {
+      return candidate;
     }
   }
 }
