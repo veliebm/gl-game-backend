@@ -70,10 +70,18 @@ function handle(request: Request): Response {
 const usedIds = new Set();
 /** Generates a new random ID. Doesn't reuse already used IDs. */
 function makeId(): string {
+  function toPascalCase(word: string) {
+    if (!word) {
+      return word;
+    }
+    return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  }
+
   while (true) {
-    const candidate = generate({ minLength: 3, maxLength: 3, exactly: 2 }).join(
-      "",
-    );
+    const candidate = generate({ minLength: 3, maxLength: 3, exactly: 2 })
+      .flatMap((word) => toPascalCase(word)).join(
+        "",
+      );
     if (!(candidate in usedIds)) {
       return candidate;
     }
