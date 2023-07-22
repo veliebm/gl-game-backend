@@ -1,16 +1,14 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
 import * as log from "https://deno.land/std@0.195.0/log/mod.ts";
-import { generate } from "npm:random-words@2.0";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
 import { ExceptionResponse } from "./ExceptionResponse.ts";
+import { makeId } from "./makeId.ts";
 
 // {Client ID: their socket}
 const activeSockets: Record<string, WebSocket> = {};
 // {Client ID: their room code}
 const rooms: Record<string, string> = {};
-// All IDs that have been assigned since the server started.
-const usedIds: Set<string> = new Set();
 
 /** Main function of the server. */
 function handle(request: Request): Response {
@@ -184,27 +182,6 @@ function handle(request: Request): Response {
   };
 
   return response;
-}
-
-/** Generates a new random ID. Doesn't reuse already used IDs. */
-function makeId(): string {
-  function toPascalCase(word: string): string {
-    if (!word) {
-      return word;
-    }
-    return word[0].toUpperCase() + word.substring(1).toLowerCase();
-  }
-
-  while (true) {
-    const candidate = generate({ minLength: 3, maxLength: 3, exactly: 2 })
-      .flatMap((word) => toPascalCase(word)).join(
-        "",
-      );
-    if (!(usedIds.has(candidate))) {
-      usedIds.add(candidate);
-      return candidate;
-    }
-  }
 }
 
 serve(handle, { port: 8000 });
