@@ -37,7 +37,22 @@ function handle(request: Request): Response {
   };
 
   socket.onmessage = ({ data }) => {
-    const message = JSON.parse(data);
+    let message;
+    try {
+      message = JSON.parse(data);
+    } catch {
+      log.error(`Invalid JSON received from ${clientId}`);
+      log.debug(`The data: ${data}`);
+      socket.send(
+        JSON.stringify(
+          new ExceptionResponse(
+            400,
+            `Your message is not valid JSON. Your message: ${data}`,
+          ),
+        ),
+      );
+      return;
+    }
     log.info(`Incoming message from ${clientId} with type: ${message.type}`);
     log.debug(`Message: ${message}`);
 
