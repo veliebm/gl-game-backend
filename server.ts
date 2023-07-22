@@ -141,6 +141,20 @@ function handle(request: Request): Response {
         );
         return;
       }
+      if (!Object.values(rooms).includes(message.roomCode)) {
+        log.error(
+          `${clientId} tried to join a nonexistent room. The room: ${message.roomCode}`,
+        );
+        socket.send(
+          JSON.stringify(
+            new ExceptionResponse(
+              400,
+              `You tried to join a room that doesn't exist. The room: ${message.roomCode}`,
+            ),
+          ),
+        );
+        return;
+      }
       log.info(`${clientId} wants to join room: ${message.roomCode}`);
       for (const activeSocketId of Object.keys(activeSockets)) {
         if (rooms[activeSocketId] === message.roomCode) {
