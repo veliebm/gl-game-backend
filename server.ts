@@ -78,6 +78,19 @@ function handle(request: Request): Response {
         }
       }
       rooms[clientId] = message.roomCode;
+    } else {
+      log.error(
+        `${clientId} sent a message with an invalid type: The type: ${message.type}`,
+      );
+      log.debug(`The message: ${message}`);
+      socket.send(
+        JSON.stringify(
+          new ExceptionResponse(
+            400,
+            `You sent a message with an invalid type. The type: ${message.type}`,
+          ),
+        ),
+      );
     }
   };
 
