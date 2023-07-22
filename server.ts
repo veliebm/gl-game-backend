@@ -70,7 +70,7 @@ function handle(request: Request): Response {
 const usedIds = new Set();
 /** Generates a new random ID. Doesn't reuse already used IDs. */
 function makeId(): string {
-  function toPascalCase(word: string) {
+  function toPascalCase(word: string): string {
     if (!word) {
       return word;
     }
