@@ -9,7 +9,7 @@ const rooms: Record<string, string> = {};
 
 function handle(request: Request): Response {
   if (request.headers.get("upgrade") !== "websocket") {
-    log.info("A client tried to send a request that wasn't a WebSocket.");
+    log.info("A client sent a non-WebSocket request.");
     return new Response("This server only accepts WebSocket connections.", {
       status: 501,
     });
