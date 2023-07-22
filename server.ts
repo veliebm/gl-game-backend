@@ -4,9 +4,14 @@ import { generate } from "npm:random-words@2.0";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
 
+// {Client ID: their socket}
 const activeSockets: Record<string, WebSocket> = {};
+// {Client ID: their room code}
 const rooms: Record<string, string> = {};
+// All IDs that have been assigned since the server started.
+const usedIds = new Set();
 
+/** Main function of the server. */
 function handle(request: Request): Response {
   if (request.headers.get("upgrade") !== "websocket") {
     log.debug("A client sent a non-WebSocket request.");
@@ -67,7 +72,6 @@ function handle(request: Request): Response {
   return response;
 }
 
-const usedIds = new Set();
 /** Generates a new random ID. Doesn't reuse already used IDs. */
 function makeId(): string {
   function toPascalCase(word: string): string {
