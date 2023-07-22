@@ -107,6 +107,22 @@ function handle(request: Request): Response {
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
       const roomCode = `room-${makeId()}`;
+      if (rooms[clientId] !== undefined) {
+        log.error(
+          `${clientId} tried to make a new room even though they're already in one.`,
+        );
+        socket.send(
+          JSON.stringify(
+            new ExceptionResponse(
+              400,
+              `You tried to make a new room even though you're already in one. You're in: ${
+                rooms[clientId]
+              }`,
+            ),
+          ),
+        );
+        return;
+      }
       rooms[clientId] = roomCode;
       log.info(`${clientId} has made a new room: ${roomCode}`);
       socket.send(JSON.stringify(new RoomCodeResponse(roomCode)));
