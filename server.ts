@@ -3,6 +3,7 @@ import * as log from "https://deno.land/std@0.195.0/log/mod.ts";
 import { generate } from "npm:random-words@2.0";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
+import { ExceptionResponse } from "./ExceptionResponse.ts";
 
 // {Client ID: their socket}
 const activeSockets: Record<string, WebSocket> = {};
@@ -40,7 +41,18 @@ function handle(request: Request): Response {
     log.info(`Incoming message from ${clientId} with type: ${message.type}`);
     log.debug(`Message: ${message}`);
 
-    if (
+    if (message.type === undefined) {
+      log.error(`${clientId} sent a message with no type.`);
+      log.debug(`The message: ${message}`);
+      socket.send(
+        JSON.stringify(
+          new ExceptionResponse(
+            400,
+            `You sent a message with no type set. Your message: ${message}`,
+          ),
+        ),
+      );
+    } else if (
       message.type === "candidate" || message.type === "offer" ||
       message.type === "answer"
     ) {
