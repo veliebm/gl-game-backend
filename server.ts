@@ -10,7 +10,7 @@ const activeSockets: Record<string, WebSocket> = {};
 // {Client ID: their room code}
 const rooms: Record<string, string> = {};
 // All IDs that have been assigned since the server started.
-const usedIds = new Set();
+const usedIds: Set<string> = new Set();
 
 /** Main function of the server. */
 function handle(request: Request): Response {
@@ -111,7 +111,8 @@ function makeId(): string {
       .flatMap((word) => toPascalCase(word)).join(
         "",
       );
-    if (!(candidate in usedIds)) {
+    if (!(usedIds.has(candidate))) {
+      usedIds.add(candidate);
       return candidate;
     }
   }
