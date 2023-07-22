@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.195.0/http/server.ts";
+import * as log from "https://deno.land/std@0.195.0/log/mod.ts";
 import { RequestOfferResponse } from "./RequestOfferResponse.ts";
 import { RoomCodeResponse } from "./RoomCodeResponse.ts";
 import { generate } from "npm:random-words@2.0";
@@ -8,7 +9,7 @@ const rooms: Record<string, string> = {};
 
 function handle(request: Request): Response {
   if (request.headers.get("upgrade") !== "websocket") {
-    console.error(`A client tried to send a request that wasn't a WebSocket.`);
+    log.info("A client tried to send a request that wasn't a WebSocket.");
     return new Response("This server only accepts WebSocket connections.", {
       status: 501,
     });
@@ -19,37 +20,39 @@ function handle(request: Request): Response {
 
   socket.onopen = () => {
     clientId = `client-${makeId()}`;
-    console.log(`${clientId} has connected.`);
+    log.info(`${clientId} has connected.`);
     activeSockets[clientId] = socket;
   };
 
   socket.onclose = () => {
-    console.log(`${clientId} has disconnected.`);
+    log.info(`${clientId} has disconnected.`);
     delete activeSockets[clientId];
     delete rooms[clientId];
   };
 
   socket.onmessage = ({ data }) => {
     const message = JSON.parse(data);
-    console.log(`Incoming message from ${clientId} with type: ${message.type}`);
+    log.info(`Incoming message from ${clientId} with type: ${message.type}`);
+    log.debug(`Message: ${message}`);
 
     if (
       message.type === "candidate" || message.type === "offer" ||
       message.type === "answer"
     ) {
+      log.debug(`Forwarding message to ${message.id}`);
       const recipient = activeSockets[message.id];
       message.id = clientId;
       recipient.send(JSON.stringify(message));
     } else if (message.type === "host") {
       const roomCode = `room-${makeId()}`;
       rooms[clientId] = roomCode;
-      console.log(`${clientId} has made a new room: ${roomCode}`);
+      log.info(`${clientId} has made a new room: ${roomCode}`);
       socket.send(new RoomCodeResponse(roomCode).toJson());
     } else if (message.type === "join") {
-      console.log(`${clientId} has asked to join room: ${message.roomCode}`);
+      log.info(`${clientId} wants to join room: ${message.roomCode}`);
       for (const activeSocketId of Object.keys(activeSockets)) {
         if (rooms[activeSocketId] === message.roomCode) {
-          console.log(
+          log.debug(
             `Asking ${activeSocketId} to send an offer to ${clientId}.`,
           );
           activeSockets[activeSocketId].send(
