@@ -11,15 +11,4 @@ export class ExceptionResponse {
     this.code = code;
     this.message = message;
   }
-
-  /** Converts this object to JSON. */
-  toJson() {
-    return JSON.stringify(this);
-  }
-
-  /** Logs an error message to console. Returns this object for chaining. */
-  withInternalMessage(internalMessage: string) {
-    console.error(internalMessage);
-    return this;
-  }
 }
